@@ -557,6 +557,20 @@
     return btoa(bin);
   }
 
+  async function fetchFileMeta(base, auth, branch) {
+    const get = await fetch(`${base}?ref=${encodeURIComponent(branch)}&_=${Date.now()}`, { headers: auth, cache: "no-store" });
+    if (get.status === 404) return { sha: null, exists: false };
+    if (!get.ok) { const e = await get.json().catch(() => ({})); throw new Error("读取失败 " + get.status + "：" + (e.message || get.statusText)); }
+    const j = await get.json();
+    return { sha: j.sha, exists: true };
+  }
+  function putFile(base, auth, branch, content, message, sha) {
+    return fetch(base, {
+      method: "PUT",
+      headers: { ...auth, "Content-Type": "application/json" },
+      body: JSON.stringify({ message, content, sha, branch })
+    });
+  }
   async function syncToCloud() {
     if (!settings.owner || !settings.repo || !settings.token) {
       toast("请先在设置中填写仓库与 Token", "err"); openSettings(); return;
@@ -565,29 +579,16 @@
     chip.className = "sync-chip syncing";
     const base = `https://api.github.com/repos/${encodeURIComponent(settings.owner)}/${encodeURIComponent(settings.repo)}/contents/${encodeURIComponent(settings.path)}`;
     const auth = { Authorization: "Bearer " + settings.token, Accept: "application/vnd.github+json" };
+    const message = "chore(data): 更新班级数据 " + (data.meta.updated || todayStr());
+    const content = toBase64(buildDataJsText());
     try {
-      const get = await fetch(`${base}?ref=${encodeURIComponent(settings.branch)}`, { headers: auth });
-      let sha = null;
-      if (get.status === 404) {
-        // file not exists yet, create without sha
-      } else if (!get.ok) {
-        const e = await get.json().catch(() => ({}));
-        throw new Error("读取失败 " + get.status + "：" + (e.message || get.statusText));
-      } else {
-        const j = await get.json();
-        sha = j.sha;
+      let meta = await fetchFileMeta(base, auth, settings.branch);
+      let put = await putFile(base, auth, settings.branch, content, message, meta.sha);
+      // 409/422：sha 不匹配（远端在我方 GET 之后被改动，或浏览器缓存了旧 sha）—— 重拉最新 sha 重试一次
+      if (put.status === 409 || put.status === 422) {
+        meta = await fetchFileMeta(base, auth, settings.branch);
+        put = await putFile(base, auth, settings.branch, content, message, meta.sha);
       }
-      const content = toBase64(buildDataJsText());
-      const put = await fetch(base, {
-        method: "PUT",
-        headers: { ...auth, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: "chore(data): 更新班级数据 " + (data.meta.updated || todayStr()),
-          content,
-          sha,
-          branch: settings.branch
-        })
-      });
       if (!put.ok) {
         const e = await put.json().catch(() => ({}));
         throw new Error("提交失败 " + put.status + "：" + (e.message || put.statusText));
