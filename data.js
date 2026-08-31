@@ -10,6 +10,7 @@ window.CLASS_DATA = {
     className: "高二（9）班",
     semester: "2026—2027学年第一学期（1-27周）",
     updated: "2026-08-31",
+    homeRoom: "高二9班",
     // 学科 → 标签色（可自定义，缺省走默认灰）
     subjectColors: {
       "语文": "#e05858",

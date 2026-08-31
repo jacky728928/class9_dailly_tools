@@ -143,7 +143,7 @@
         const col = subjectColor(entry.subject);
         cell.innerHTML = `<span class="subj-tag" style="--subject-color:${col}">${escapeHtml(entry.subject)}</span>` +
           (entry.teacher ? `<div class="sch-teacher">${escapeHtml(entry.teacher)}</div>` : "") +
-          (entry.room ? `<div class="sch-room">${escapeHtml(entry.room)}</div>` : "");
+          (entry.room && entry.room !== data.meta.homeRoom ? `<div class="sch-room">${escapeHtml(entry.room)}</div>` : "");
         if (editState.schedule) {
           cell.style.cursor = "pointer";
           cell.title = "编辑";
