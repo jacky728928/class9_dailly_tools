@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>班级管理 · 课表 / 作业 / 考勤 / 卫生</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- 顶部栏 -->
+<header class="topbar">
+  <div class="brand">
+    <span class="class-name" id="brandClassName">班级管理</span>
+    <span class="semester" id="brandSemester"></span>
+  </div>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="schedule">课表</button>
+    <button class="tab" data-tab="homework">作业</button>
+    <button class="tab" data-tab="attendance">考勤</button>
+    <button class="tab" data-tab="cleaning">卫生</button>
+  </nav>
+
+  <div class="spacer"></div>
+
+  <div class="actions">
+    <span class="sync-chip clean" id="syncChip"><span class="pulse"></span></span>
+    <button class="btn btn-primary" id="btnSync">同步到云端</button>
+    <button class="icon-btn" id="btnSettings" title="设置">⚙</button>
+  </div>
+</header>
+
+<main class="shell">
+
+  <!-- 课表 -->
+  <section class="panel active" id="panel-schedule">
+    <div class="panel-head">
+      <div>
+        <h2 class="panel-title">周课表</h2>
+        <div class="panel-sub">点击「编辑课表」可修改科目与任课老师，当前节次会高亮</div>
+      </div>
+      <div class="toolbar" id="scheduleToolbar"></div>
+    </div>
+    <div class="schedule-wrap">
+      <div class="schedule-grid" id="scheduleGrid"></div>
+    </div>
+  </section>
+
+  <!-- 作业 -->
+  <section class="panel" id="panel-homework">
+    <div class="panel-head">
+      <div>
+        <h2 class="panel-title">作业收交</h2>
+        <div class="panel-sub">点击学生卡片切换已交/未交，进度条实时更新</div>
+      </div>
+      <div class="toolbar" id="hwToolbar"></div>
+    </div>
+    <div class="hw-list" id="hwList"></div>
+  </section>
+
+  <!-- 考勤 -->
+  <section class="panel" id="panel-attendance">
+    <div class="panel-head">
+      <div>
+        <h2 class="panel-title">考勤打卡</h2>
+        <div class="panel-sub">选择日期，逐人标记 到 / 缺 / 迟 / 请</div>
+      </div>
+      <div class="toolbar" id="attToolbar"></div>
+    </div>
+    <div class="att-stats" id="attStats"></div>
+    <div class="card">
+      <div class="att-list" id="attList"></div>
+    </div>
+  </section>
+
+  <!-- 卫生 -->
+  <section class="panel" id="panel-cleaning">
+    <div class="panel-head">
+      <div>
+        <h2 class="panel-title">卫生打扫排班</h2>
+        <div class="panel-sub">按周安排各区域值日生，可复制上周排班</div>
+      </div>
+      <div class="toolbar" id="cleanToolbar"></div>
+    </div>
+    <div class="clean-grid" id="cleanGrid"></div>
+  </section>
+
+</main>
+
+<!-- 通用模态框 -->
+<div class="modal-mask" id="modalMask">
+  <div class="modal">
+    <div class="modal-head"><h3></h3><button class="icon-btn" data-close>✕</button></div>
+    <div class="modal-body"></div>
+    <div class="modal-foot"></div>
+  </div>
+</div>
+
+<!-- Toast 容器 -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
