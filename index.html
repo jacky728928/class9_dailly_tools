@@ -17,6 +17,7 @@
 
   <nav class="tabs">
     <button class="tab active" data-tab="schedule">课表</button>
+    <button class="tab" data-tab="roster">名单</button>
     <button class="tab" data-tab="homework">作业</button>
     <button class="tab" data-tab="attendance">考勤</button>
     <button class="tab" data-tab="cleaning">卫生</button>
@@ -47,6 +48,22 @@
     </div>
   </section>
 
+  <!-- 学生名单 -->
+  <section class="panel" id="panel-roster">
+    <div class="panel-head">
+      <div>
+        <h2 class="panel-title">学生名单</h2>
+        <div class="panel-sub">支持姓名 / 学号检索，可折叠收起</div>
+      </div>
+      <div class="toolbar" id="rosterToolbar"></div>
+    </div>
+    <div class="roster-search-wrap">
+      <input class="input roster-search" id="rosterSearch" type="search" placeholder="输入姓名或学号搜索…" autocomplete="off">
+      <span class="roster-count" id="rosterCount"></span>
+    </div>
+    <div class="roster-body" id="rosterBody"></div>
+  </section>
+
   <!-- 作业 -->
   <section class="panel" id="panel-homework">
     <div class="panel-head">
@@ -55,6 +72,9 @@
         <div class="panel-sub">点击学生卡片切换已交/未交，进度条实时更新</div>
       </div>
       <div class="toolbar" id="hwToolbar"></div>
+    </div>
+    <div class="roster-search-wrap hw-search-wrap">
+      <input class="input roster-search" id="hwSearch" type="search" placeholder="筛选学生（姓名/学号）…" autocomplete="off">
     </div>
     <div class="hw-list" id="hwList"></div>
   </section>
@@ -67,6 +87,9 @@
         <div class="panel-sub">选择日期，逐人标记 到 / 缺 / 迟 / 请</div>
       </div>
       <div class="toolbar" id="attToolbar"></div>
+    </div>
+    <div class="roster-search-wrap att-search-wrap">
+      <input class="input roster-search" id="attSearch" type="search" placeholder="筛选学生（姓名/学号）…" autocomplete="off">
     </div>
     <div class="att-stats" id="attStats"></div>
     <div class="card">

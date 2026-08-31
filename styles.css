@@ -264,7 +264,7 @@ a:hover { text-decoration: underline; }
   padding: 9px 14px; border-bottom: 1px solid var(--border);
 }
 .att-row:last-child { border-bottom: 0; }
-.att-no { font-size: 12px; color: var(--text-3); font-family: var(--font-num); width: 26px; }
+.att-no { font-size: 12px; color: var(--text-3); font-family: var(--font-num); min-width: 64px; }
 .att-name { font-weight: 600; min-width: 88px; }
 .seg { display: inline-flex; gap: 4px; margin-left: auto; }
 .seg button {
@@ -290,6 +290,52 @@ a:hover { text-decoration: underline; }
   background: var(--surface-2); color: var(--text); border: 1px solid var(--border);
 }
 .person-chip.empty { color: var(--text-3); font-style: italic; background: transparent; border-style: dashed; }
+
+/* ---------- 学生名单 ---------- */
+.roster-search-wrap {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.roster-search {
+  flex: 1 1 200px; max-width: 400px;
+  padding: 9px 14px; font-size: 14px; border-radius: 10px;
+  background: var(--surface); border: 1px solid var(--border);
+  outline: none; transition: border-color .15s, box-shadow .15s;
+}
+.roster-search:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+.roster-count { font-size: 12.5px; color: var(--text-3); font-weight: 600; white-space: nowrap; }
+
+.roster-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 10px;
+}
+.roster-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px; border-radius: var(--radius-sm);
+  background: var(--surface); border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  transition: border-color .15s, box-shadow .15s, transform .1s;
+}
+.roster-item:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow);
+  transform: translateY(-1px);
+}
+.roster-seq {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 8px;
+  background: var(--primary-soft); color: var(--primary-ink);
+  font-size: 12px; font-weight: 700; font-family: var(--font-num);
+  flex-shrink: 0;
+}
+.roster-student-no {
+  font-size: 12.5px; color: var(--text-3); font-family: var(--font-num);
+  letter-spacing: .3px; min-width: 56px;
+}
+.roster-name { font-size: 14.5px; font-weight: 600; color: var(--text); }
+
+.hw-search-wrap, .att-search-wrap { margin-bottom: 14px; }
 
 /* ---------- 编辑表单 / 模态框 ---------- */
 .modal-mask {
@@ -344,4 +390,6 @@ a:hover { text-decoration: underline; }
   .att-stats { grid-template-columns: repeat(3, 1fr); }
   .form-row2 { grid-template-columns: 1fr; }
   .hw-dates { margin-left: 0; width: 100%; }
+  .roster-grid { grid-template-columns: 1fr; }
+  .roster-search { max-width: 100%; }
 }

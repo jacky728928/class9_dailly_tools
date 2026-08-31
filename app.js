@@ -22,6 +22,10 @@
   let editState = { schedule: false, cleaning: false };
   let attDate = "";
   let cleanWeekIdx = 0;
+  let rosterCollapsed = false;
+  let rosterQuery = "";
+  let hwQuery = "";
+  let attQuery = "";
 
   function loadData() {
     try {
@@ -220,6 +224,51 @@
   }
 
   /* =====================================================================
+     模块 1.5：学生名单
+     ===================================================================== */
+  function renderRoster() {
+    const tb = $("#rosterToolbar");
+    tb.innerHTML = "";
+    const toggleBtn = el("button", "btn" + (rosterCollapsed ? "" : " btn-primary"), rosterCollapsed ? "展开名单" : "收起名单");
+    toggleBtn.onclick = () => { rosterCollapsed = !rosterCollapsed; renderRoster(); };
+    tb.appendChild(toggleBtn);
+
+    const body = $("#rosterBody");
+    const countEl = $("#rosterCount");
+
+    if (rosterCollapsed) {
+      body.innerHTML = "";
+      countEl.textContent = `共 ${data.students.length} 人（已折叠）`;
+      return;
+    }
+
+    const q = rosterQuery.trim().toLowerCase();
+    const filtered = q
+      ? data.students.filter(s => s.name.toLowerCase().includes(q) || s.studentNo.includes(q))
+      : data.students;
+
+    countEl.textContent = q ? `匹配 ${filtered.length} / ${data.students.length} 人` : `共 ${data.students.length} 人`;
+
+    if (!filtered.length) {
+      body.innerHTML = "";
+      body.appendChild(emptyState("未找到匹配学生", "请检查搜索关键词"));
+      return;
+    }
+
+    body.innerHTML = "";
+    const grid = el("div", "roster-grid");
+    filtered.forEach(s => {
+      const card = el("div", "roster-item");
+      card.innerHTML =
+        `<span class="roster-seq">${escapeHtml(String(s.id).padStart(2, "0"))}</span>` +
+        `<span class="roster-student-no">${escapeHtml(s.studentNo)}</span>` +
+        `<span class="roster-name">${escapeHtml(s.name)}</span>`;
+      grid.appendChild(card);
+    });
+    body.appendChild(grid);
+  }
+
+  /* =====================================================================
      模块 2：作业收交
      ===================================================================== */
   function renderHomework() {
@@ -274,9 +323,12 @@
           <button class="btn btn-sm btn-ghost btn-danger" data-del="${escapeHtml(hw.id)}">删除</button>
         </div>`;
       const chips = $(".chip-list", card);
+      const hq = hwQuery.trim().toLowerCase();
       data.students.forEach(s => {
+        if (hq && !s.name.toLowerCase().includes(hq) && !s.studentNo.includes(hq)) return;
         const on = submitted.has(s.id);
         const c = el("span", "chip " + (on ? "submitted" : "missing"), `${escapeHtml(s.name)}`);
+        c.title = s.studentNo;
         c.onclick = () => {
           if (on) hw.submittedIds = (hw.submittedIds || []).filter(x => x !== s.id);
           else (hw.submittedIds = hw.submittedIds || []).push(s.id);
@@ -360,7 +412,9 @@
     list.innerHTML = "";
     const byId = {};
     rec.forEach(r => byId[r.studentId] = r.status);
+    const aq = attQuery.trim().toLowerCase();
     data.students.forEach(s => {
+      if (aq && !s.name.toLowerCase().includes(aq) && !s.studentNo.includes(aq)) return;
       const cur = byId[s.id] || "present";
       const row = el("div", "att-row");
       row.innerHTML = `<span class="att-no">${escapeHtml(s.studentNo)}</span><span class="att-name">${escapeHtml(s.name)}</span>`;
@@ -480,6 +534,7 @@
     data.students.forEach(s => {
       const on = have.has(s.id);
       const c = el("span", "chip " + (on ? "submitted" : ""), escapeHtml(s.name));
+      c.title = s.studentNo;
       c.onclick = () => {
         if (have.has(s.id)) { have.delete(s.id); c.classList.remove("submitted"); }
         else { have.add(s.id); c.classList.add("submitted"); }
@@ -611,6 +666,7 @@
   function renderAll() {
     renderTopbar();
     renderSchedule();
+    renderRoster();
     renderHomework();
     renderAttendance();
     renderCleaning();
@@ -625,6 +681,13 @@
     document.getElementById("btnSync").onclick = syncToCloud;
     document.getElementById("modalMask").addEventListener("click", (e) => { if (e.target.id === "modalMask") closeModal(); });
     document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
+
+    const rosterSearchEl = document.getElementById("rosterSearch");
+    if (rosterSearchEl) rosterSearchEl.addEventListener("input", (e) => { rosterQuery = e.target.value; renderRoster(); });
+    const hwSearchEl = document.getElementById("hwSearch");
+    if (hwSearchEl) hwSearchEl.addEventListener("input", (e) => { hwQuery = e.target.value; renderHomework(); });
+    const attSearchEl = document.getElementById("attSearch");
+    if (attSearchEl) attSearchEl.addEventListener("input", (e) => { attQuery = e.target.value; renderAttendance(); });
 
     attDate = latestAttDate() || todayStr();
     cleanWeekIdx = Math.max(0, (data.cleaning.schedule.length || 1) - 1);

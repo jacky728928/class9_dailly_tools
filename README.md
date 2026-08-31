@@ -5,12 +5,12 @@
 
 ## 功能模块
 
-| 模块 | 说明 |
-|---|---|
-| 课表 | 周课表网格（行=节次、列=周一~周五），学科色编码，当前节次高亮；可编辑科目/老师、增删节次 |
-| 作业 | 卡片化作业列表，进度条 + 已交/未交名单；点击学生切换提交状态，支持新增/删除、全选 |
-| 考勤 | 按日期逐人标记 到/缺/迟/请，顶部统计出勤率与各状态人数；支持"全部到勤" |
-| 卫生 | 按周排班，各区域卡片显示值日生；可分配学生、新增区域、新增周、复制上周排班 |
+| 模块 | 说明                                              |
+| -- | ----------------------------------------------- |
+| 课表 | 周课表网格（行=节次、列=周一\~周五），学科色编码，当前节次高亮；可编辑科目/老师、增删节次 |
+| 作业 | 卡片化作业列表，进度条 + 已交/未交名单；点击学生切换提交状态，支持新增/删除、全选     |
+| 考勤 | 按日期逐人标记 到/缺/迟/请，顶部统计出勤率与各状态人数；支持"全部到勤"          |
+| 卫生 | 按周排班，各区域卡片显示值日生；可分配学生、新增区域、新增周、复制上周排班           |
 
 ## 本地预览
 
@@ -41,26 +41,38 @@ class-manager/
 让负责人在浏览器里改数据并自动写回仓库，需配置一次 Token：
 
 1. 申请 GitHub 细粒度 Personal Access Token：
-   - GitHub → Settings → Developer settings → Personal access tokens → **Fine-grained tokens** → Generate new token。
-   - **Repository access** 选 `Only select repositories` → 勾选刚建的 `class-data` 仓库。
-   - **Permissions → Repository permissions → Contents** 设为 **Read and write**（其余保持 No access）。
-   - 生成后复制 token（形如 `github_pat_...`）。
+
+   * GitHub → Settings → Developer settings → Personal access tokens → **Fine-grained tokens** → Generate new token。
+
+   * **Repository access** 选 `Only select repositories` → 勾选刚建的 `class-data` 仓库。
+
+   * **Permissions → Repository permissions → Contents** 设为 **Read and write**（其余保持 No access）。
+
+   * 生成后复制 token（形如 `github_pat_...`）。
 2. 在网页右上角点 **⚙ 设置**，填写：
-   - 仓库 Owner（你的用户名）、Repo（仓库名）、分支（默认 `main`）、文件路径（默认 `data.js`）。
-   - 粘贴 Token。
+
+   * 仓库 Owner（你的用户名）、Repo（仓库名）、分支（默认 `main`）、文件路径（默认 `data.js`）。
+
+   * 粘贴 Token。
 3. 保存设置。之后改完数据点 **同步到云端**，data.js 即被自动更新并产生一次 commit。
 
 > ⚠ 安全提示：Token 仅存在当前浏览器的 localStorage，不会上传到任何第三方。请勿在公共电脑留存；建议使用细粒度 token 且只授该仓库 Contents:write 权限。GitHub Pages 默认走 HTTPS，传输加密。
 
 ## 协同编辑流程
 
-- **改数据**：任一负责人打开网页 → 在四个模块里增删改 → 数据先存浏览器本地（防丢）→ 点"同步到云端"提交。
-- **拉取最新**：因浏览器会缓存本地改动，要获取他人最新提交：**硬刷新页面**（Ctrl/⌘ + F5 重新拉取 data.js）→ 点 ⚙ 设置 → **重置为文件数据**（清空本地覆盖，载入最新文件内容）。
-- **多人协作**：建议约定一人主编辑或错开时段，避免同时改同一字段产生覆盖（本工具为轻量级，不做服务端冲突合并）。
+* **改数据**：任一负责人打开网页 → 在四个模块里增删改 → 数据先存浏览器本地（防丢）→ 点"同步到云端"提交。
+
+* **拉取最新**：因浏览器会缓存本地改动，要获取他人最新提交：**硬刷新页面**（Ctrl/⌘ + F5 重新拉取 data.js）→ 点 ⚙ 设置 → **重置为文件数据**（清空本地覆盖，载入最新文件内容）。
+
+* **多人协作**：建议约定一人主编辑或错开时段，避免同时改同一字段产生覆盖（本工具为轻量级，不做服务端冲突合并）。
 
 ## 自定义
 
-- **学科颜色**：编辑 `data.js` 顶部 `meta.subjectColors`。
-- **班级名/学期**：编辑 `data.js` 的 `meta.className` / `meta.semester`。
-- **学生名单**：编辑 `data.students`（`id` 用于关联，请保持稳定）。
-- 所有改动既可直接改 `data.js`，也可在页面内编辑后同步。
+* **学科颜色**：编辑 `data.js` 顶部 `meta.subjectColors`。
+
+* **班级名/学期**：编辑 `data.js` 的 `meta.className` / `meta.semester`。
+
+* **学生名单**：编辑 `data.students`（`id` 用于关联，请保持稳定）。
+
+* 所有改动既可直接改 `data.js`，也可在页面内编辑后同步。
+
