@@ -208,6 +208,9 @@ a:hover { text-decoration: underline; }
 }
 .subj-tag.tone-soft { color: var(--subject-ink, #475569); background: var(--subject-soft, #eef1f4); }
 .sch-teacher { font-size: 11px; color: var(--text-3); }
+.sch-room { font-size: 10.5px; color: var(--text-3); opacity: .85; }
+.sch-break { flex-direction: row; align-items: center; justify-content: center; gap: 10px; min-height: 34px; background: var(--surface-2); color: var(--text-2); }
+.sch-break .sch-time { font-size: 11px; }
 
 /* ---------- 作业 ---------- */
 .hw-list { display: flex; flex-direction: column; gap: 14px; }

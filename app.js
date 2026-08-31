@@ -117,13 +117,21 @@
 
     const nowIdx = currentPeriodIndex();
     sch.periods.forEach((p, pi) => {
+      if (p.break) {
+        const bcell = el("div", "sch-cell sch-break");
+        bcell.style.gridColumn = "1 / -1";
+        if (pi === nowIdx) bcell.classList.add("sch-now");
+        bcell.innerHTML = `<span class="sch-period">${escapeHtml(p.label || "午休")}</span><span class="sch-time">${escapeHtml(p.time || "")}</span>`;
+        grid.appendChild(bcell);
+        return;
+      }
       const timeCell = el("div", "sch-cell");
       timeCell.innerHTML = `<div class="sch-period">第${p.index}节</div><div class="sch-time">${escapeHtml(p.time)}</div>`;
       if (editState.schedule) {
         const rm = el("button", "btn btn-sm btn-ghost btn-danger", "✕");
         rm.style.cssText = "align-self:flex-start;padding:1px 6px;font-size:10px;";
         rm.title = "删除该节";
-        rm.onclick = () => { if (confirm("删除第" + p.index + "节？")) { sch.periods.splice(pi, 1); WEEKDAYS.forEach(d => { if (sch.days[d]) sch.days[d].splice(pi, 1); }); sch.periods.forEach((pp, i) => pp.index = i + 1); persist(); renderSchedule(); } };
+        rm.onclick = () => { if (confirm("删除第" + p.index + "节？")) { sch.periods.splice(pi, 1); WEEKDAYS.forEach(d => { if (sch.days[d]) sch.days[d].splice(pi, 1); }); let n = 0; sch.periods.forEach(pp => { if (!pp.break) { n++; pp.index = n; } }); persist(); renderSchedule(); } };
         timeCell.appendChild(rm);
       }
       grid.appendChild(timeCell);
@@ -134,7 +142,8 @@
         if (pi === nowIdx) cell.classList.add("sch-now");
         const col = subjectColor(entry.subject);
         cell.innerHTML = `<span class="subj-tag" style="--subject-color:${col}">${escapeHtml(entry.subject)}</span>` +
-          (entry.teacher ? `<div class="sch-teacher">${escapeHtml(entry.teacher)}</div>` : "");
+          (entry.teacher ? `<div class="sch-teacher">${escapeHtml(entry.teacher)}</div>` : "") +
+          (entry.room ? `<div class="sch-room">${escapeHtml(entry.room)}</div>` : "");
         if (editState.schedule) {
           cell.style.cursor = "pointer";
           cell.title = "编辑";
@@ -153,7 +162,7 @@
     if (editState.schedule) {
       const add = el("button", "btn btn-sm", "+ 添加节次");
       add.onclick = () => {
-        const idx = sch.periods.length + 1;
+        const idx = sch.periods.filter(p => !p.break).length + 1;
         sch.periods.push({ index: idx, time: "00:00-00:00" });
         WEEKDAYS.forEach(d => { if (!sch.days[d]) sch.days[d] = []; sch.days[d].push({ subject: "自习", teacher: "" }); });
         persist(); renderSchedule();
@@ -181,7 +190,7 @@
     const subjects = Object.keys(data.meta.subjectColors || {});
     const opts = subjects.map(s => `<option ${s === entry.subject ? "selected" : ""}>${escapeHtml(s)}</option>`).join("") + `<option ${subjects.indexOf(entry.subject) < 0 ? "selected" : ""} value="__other">其他…</option>`;
     openModal({
-      title: `编辑 ${day} · 第${pi + 1}节`,
+      title: `编辑 ${day} · 第${(data.schedule.periods[pi] || {}).index || (pi + 1)}节`,
       body: `
         <div class="form-group">
           <label>科目</label>
@@ -191,6 +200,10 @@
         <div class="form-group">
           <label>任课老师</label>
           <input class="input" id="cellTeacher" value="${escapeHtml(entry.teacher)}" placeholder="老师姓名">
+        </div>
+        <div class="form-group">
+          <label>教室</label>
+          <input class="input" id="cellRoom" value="${escapeHtml(entry.room || "")}" placeholder="如 高二9班 / 1341教室">
         </div>`,
       footer: `<button class="btn btn-ghost" data-close>取消</button><button class="btn btn-primary" id="cellSave">保存</button>`
     });
@@ -199,8 +212,9 @@
       let subj = $("#cellSubject").value;
       if (subj === "__other") subj = $("#cellSubjectCustom").value.trim() || "自习";
       const teacher = $("#cellTeacher").value.trim();
+      const room = $("#cellRoom").value.trim();
       if (!data.schedule.days[day]) data.schedule.days[day] = [];
-      data.schedule.days[day][pi] = { subject: subj, teacher };
+      data.schedule.days[day][pi] = { subject: subj, teacher, room };
       persist(); renderSchedule(); closeModal(); toast("课表已更新", "ok");
     };
   }

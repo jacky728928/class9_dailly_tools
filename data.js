@@ -7,8 +7,8 @@
    ========================================================================= */
 window.CLASS_DATA = {
   meta: {
-    className: "高二（8）班",
-    semester: "2026—2027学年秋季",
+    className: "高二（9）班",
+    semester: "2026—2027学年第一学期（1-27周）",
     updated: "2026-08-31",
     // 学科 → 标签色（可自定义，缺省走默认灰）
     subjectColors: {
@@ -25,7 +25,10 @@ window.CLASS_DATA = {
       "音乐": "#ec4899",
       "美术": "#f97316",
       "班会": "#6366f1",
-      "自习": "#94a3b8"
+      "自习": "#94a3b8",
+      "走班": "#64748b",
+      "艺术技术": "#db2777",
+      "班校会": "#0ea5e9"
     }
   },
 
@@ -46,65 +49,77 @@ window.CLASS_DATA = {
   // 周课表：行=节次，列=周一~周五
   schedule: {
     periods: [
-      { index: 1, time: "07:30-08:15" },
-      { index: 2, time: "08:25-09:10" },
-      { index: 3, time: "09:30-10:15" },
-      { index: 4, time: "10:25-11:10" },
-      { index: 5, time: "11:20-12:05" },
-      { index: 6, time: "14:30-15:15" },
-      { index: 7, time: "15:25-16:10" },
-      { index: 8, time: "16:20-17:05" }
+      { index: 1, time: "08:00-08:40" },
+      { index: 2, time: "08:50-09:30" },
+      { index: 3, time: "09:40-10:20" },
+      { index: 4, time: "10:35-11:15" },
+      { index: 5, time: "11:25-12:05" },
+      { break: true, label: "午休", time: "12:05-13:30" },
+      { index: 6, time: "13:30-14:10" },
+      { index: 7, time: "14:40-15:20" },
+      { index: 8, time: "15:35-16:15" },
+      { index: 9, time: "16:25-17:05" }
     ],
     days: {
       "周一": [
-        { subject: "语文", teacher: "王老师" },
-        { subject: "数学", teacher: "李老师" },
-        { subject: "英语", teacher: "张老师" },
-        { subject: "物理", teacher: "陈老师" },
-        { subject: "化学", teacher: "刘老师" },
-        { subject: "体育", teacher: "郑老师" },
-        { subject: "自习", teacher: "" },
-        { subject: "班会", teacher: "班主任" }
+        { subject: "语文", teacher: "叶青", room: "高二9班" },
+        { subject: "数学", teacher: "彭红", room: "高二9班" },
+        { subject: "数学", teacher: "彭红", room: "高二9班" },
+        { subject: "走班", teacher: "历X1 徐晓枫 / 政X1 王潞玲 / 地X1 李娟", room: "1341教室 / 高二6班 / 高二9班" },
+        { subject: "走班", teacher: "物X4 赵志龙 / 化X9 丁激扬 / 生X10 侯峰 / 政X3 王潞玲 / 地X3 赵云渤", room: "高二4班 / 高二9班 / 高二10班 / 1341教室 / 1111教室" },
+        null,
+        { subject: "走班", teacher: "物X9 刘一鸣 / 历X2 刘雨洁", room: "高二9班 / 1341教室" },
+        { subject: "英语", teacher: "王宇[英]", room: "高二9班" },
+        { subject: "体育", teacher: "", room: "" },
+        { subject: "自习", teacher: "自习23", room: "高二9班" }
       ],
       "周二": [
-        { subject: "数学", teacher: "李老师" },
-        { subject: "语文", teacher: "王老师" },
-        { subject: "英语", teacher: "张老师" },
-        { subject: "化学", teacher: "刘老师" },
-        { subject: "物理", teacher: "陈老师" },
-        { subject: "生物", teacher: "赵老师" },
-        { subject: "政治", teacher: "孙老师" },
-        { subject: "自习", teacher: "" }
+        { subject: "数学", teacher: "彭红", room: "高二9班" },
+        { subject: "英语", teacher: "王宇[英]", room: "高二9班" },
+        { subject: "体育", teacher: "", room: "" },
+        { subject: "艺术技术", teacher: "", room: "" },
+        { subject: "语文", teacher: "叶青", room: "高二9班" },
+        null,
+        { subject: "走班", teacher: "政H3 王宇[政] / 自习", room: "高二3班 / 高二9班" },
+        { subject: "走班", teacher: "物H1 石甄 / 政H8 黄亚庆 / 自习", room: "1341教室 / 高二8班 / 高二9班" },
+        { subject: "自习", teacher: "", room: "" },
+        { subject: "自习", teacher: "", room: "" }
       ],
       "周三": [
-        { subject: "英语", teacher: "张老师" },
-        { subject: "数学", teacher: "李老师" },
-        { subject: "语文", teacher: "王老师" },
-        { subject: "生物", teacher: "赵老师" },
-        { subject: "物理", teacher: "陈老师" },
-        { subject: "地理", teacher: "吴老师" },
-        { subject: "历史", teacher: "周老师" },
-        { subject: "自习", teacher: "" }
+        { subject: "英语", teacher: "王宇[英]", room: "高二9班" },
+        { subject: "走班", teacher: "物X9 刘一鸣 / 历X2 刘雨洁", room: "高二9班 / 1341教室" },
+        { subject: "走班", teacher: "历X1 徐晓枫 / 政X1 王潞玲 / 地X1 李娟", room: "1341教室 / 高二6班 / 高二9班" },
+        { subject: "体育", teacher: "", room: "" },
+        { subject: "数学", teacher: "彭红", room: "高二9班" },
+        null,
+        { subject: "语文", teacher: "叶青", room: "高二9班" },
+        { subject: "走班", teacher: "政H3 王宇[政] / 自习", room: "高二3班 / 高二9班" },
+        { subject: "自习", teacher: "自习23", room: "高二9班" },
+        { subject: "走班", teacher: "物X4 赵志龙 / 化X9 丁激扬 / 生X10 侯峰 / 政X3 王潞玲 / 地X3 赵云渤", room: "高二4班 / 高二9班 / 高二10班 / 1341教室 / 1111教室" }
       ],
       "周四": [
-        { subject: "语文", teacher: "王老师" },
-        { subject: "数学", teacher: "李老师" },
-        { subject: "英语", teacher: "张老师" },
-        { subject: "物理", teacher: "陈老师" },
-        { subject: "化学", teacher: "刘老师" },
-        { subject: "政治", teacher: "孙老师" },
-        { subject: "历史", teacher: "周老师" },
-        { subject: "自习", teacher: "" }
+        { subject: "英语", teacher: "王宇[英]", room: "高二9班" },
+        { subject: "体育", teacher: "", room: "" },
+        { subject: "数学", teacher: "彭红", room: "高二9班" },
+        { subject: "语文", teacher: "叶青", room: "高二9班" },
+        { subject: "语文", teacher: "叶青", room: "高二9班" },
+        null,
+        { subject: "走班", teacher: "物X4 赵志龙 / 化X9 丁激扬 / 生X10 侯峰 / 政X3 王潞玲 / 地X3 赵云渤", room: "高二4班 / 高二9班 / 高二10班 / 1341教室 / 1111教室" },
+        { subject: "走班", teacher: "历X1 徐晓枫 / 政X1 王潞玲 / 地X1 李娟", room: "1341教室 / 高二6班 / 高二9班" },
+        { subject: "走班", teacher: "物X9 刘一鸣 / 历X2 刘雨洁", room: "高二9班 / 1341教室" },
+        { subject: "走班", teacher: "物H1 石甄 / 政H8 黄亚庆 / 自习", room: "1341教室 / 高二8班 / 高二9班" }
       ],
       "周五": [
-        { subject: "数学", teacher: "李老师" },
-        { subject: "语文", teacher: "王老师" },
-        { subject: "英语", teacher: "张老师" },
-        { subject: "物理", teacher: "陈老师" },
-        { subject: "生物", teacher: "赵老师" },
-        { subject: "体育", teacher: "郑老师" },
-        { subject: "音乐", teacher: "钱老师" },
-        { subject: "自习", teacher: "" }
+        { subject: "走班", teacher: "物X4 赵志龙 / 化X9 丁激扬 / 生X10 侯峰 / 政X3 王潞玲 / 地X3 赵云渤", room: "高二4班 / 高二9班 / 高二10班 / 1341教室 / 1111教室" },
+        { subject: "走班", teacher: "历X1 徐晓枫 / 政X1 王潞玲 / 地X1 李娟", room: "1341教室 / 高二6班 / 高二9班" },
+        { subject: "走班", teacher: "物X9 刘一鸣 / 历X2 刘雨洁", room: "高二9班 / 1341教室" },
+        { subject: "英语", teacher: "王宇[英]", room: "高二9班" },
+        { subject: "数学", teacher: "彭红", room: "高二9班" },
+        null,
+        { subject: "班校会", teacher: "", room: "" },
+        { subject: "体育", teacher: "", room: "" },
+        { subject: "艺术技术", teacher: "", room: "" },
+        { subject: "语文", teacher: "叶青", room: "高二9班" }
       ]
     }
   },
