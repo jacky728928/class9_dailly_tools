@@ -280,8 +280,9 @@ a:hover { text-decoration: underline; }
 .seg button.on.leave   { background: var(--leave);   color: #fff; }
 
 /* ---------- 卫生 ---------- */
-.clean-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
-.area-card { padding: 16px; border-radius: var(--radius); position: relative; overflow: hidden; }
+.clean-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; }
+.area-card { padding: 16px; border-radius: var(--radius); position: relative; overflow: hidden; min-height: 80px; transition: box-shadow .15s, transform .1s; }
+.area-card:hover { box-shadow: var(--shadow); transform: translateY(-1px); }
 .area-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--area-color, var(--primary)); }
 .area-name { font-size: 14.5px; font-weight: 700; margin-bottom: 10px; }
 .area-people { display: flex; flex-wrap: wrap; gap: 7px; }

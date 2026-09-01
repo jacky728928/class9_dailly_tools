@@ -34,10 +34,17 @@
     } catch (e) { /* ignore corrupt */ }
     return deepClone(window.CLASS_DATA || {});
   }
+  const DEFAULT_SETTINGS = {
+    owner: "jacky728928",
+    repo: "class9_dailly_tools",
+    branch: "main",
+    path: "data.js"
+  };
   function loadSettings() {
     try {
-      return JSON.parse(localStorage.getItem(SET_KEY)) || {};
-    } catch (e) { return {}; }
+      const saved = JSON.parse(localStorage.getItem(SET_KEY)) || {};
+      return Object.assign({}, DEFAULT_SETTINGS, saved);
+    } catch (e) { return Object.assign({}, DEFAULT_SETTINGS); }
   }
   function deepClone(o) { return JSON.parse(JSON.stringify(o)); }
 
@@ -445,7 +452,12 @@
      ===================================================================== */
   function renderCleaning() {
     const sch = data.cleaning.schedule;
-    if (!sch.length) { data.cleaning.schedule = [{ weekStart: todayStr(), weekLabel: "第1周", tasks: [] }]; }
+    if (!sch.length) {
+      data.cleaning.schedule = [{
+        weekStart: todayStr(), weekLabel: "第1周",
+        days: WEEKDAYS.map((_, i) => ({ weekday: i + 1, studentIds: [] }))
+      }];
+    }
     if (cleanWeekIdx >= sch.length) cleanWeekIdx = sch.length - 1;
 
     const tb = $("#cleanToolbar");
@@ -458,27 +470,32 @@
       <button class="btn" id="cleanToggle">${editState.cleaning ? "完成编辑" : "编辑排班"}</button>`;
 
     const week = sch[cleanWeekIdx];
+    if (!week.days) week.days = WEEKDAYS.map((_, i) => ({ weekday: i + 1, studentIds: [] }));
+
     const grid = $("#cleanGrid");
     grid.innerHTML = "";
-    const colors = ["#4f46e5", "#14b8a6", "#f59e0b", "#ec4899", "#8b5cf6", "#06b6d4"];
-    (week.tasks || []).forEach((task, ti) => {
-      const col = colors[ti % colors.length];
+    const colors = ["#4f46e5", "#14b8a6", "#f59e0b", "#ec4899", "#8b5cf6"];
+    week.days.forEach((day, di) => {
+      const col = colors[di % colors.length];
       const card = el("div", "card area-card");
       card.style.setProperty("--area-color", col);
-      const peopleHtml = editState.cleaning ? "" : (task.studentIds.length
-        ? task.studentIds.map(id => `<span class="person-chip">${escapeHtml(studentName(id))}</span>`).join("")
+      const dayLabel = WEEKDAYS[day.weekday - 1] || ("第" + (di + 1) + "天");
+      const ids = day.studentIds || [];
+      const peopleHtml = editState.cleaning ? "" : (ids.length
+        ? ids.map(id => `<span class="person-chip">${escapeHtml(studentName(id))}</span>`).join("")
         : `<span class="person-chip empty">未分配</span>`);
-      card.innerHTML = `<div class="area-name">${escapeHtml(task.area)}</div><div class="area-people" data-ti="${ti}">${peopleHtml}</div>
-        ${editState.cleaning ? `<div style="margin-top:10px;display:flex;gap:6px"><button class="btn btn-sm" data-assign="${ti}">分配学生</button><button class="btn btn-sm btn-ghost btn-danger" data-rmarea="${ti}">删除区域</button></div>` : ""}`;
+      card.innerHTML = `<div class="area-name">${escapeHtml(dayLabel)}</div><div class="area-people" data-di="${di}">${peopleHtml}</div>
+        ${editState.cleaning ? `<div style="margin-top:10px"><button class="btn btn-sm" data-assign="${di}">分配学生</button></div>` : ""}`;
       grid.appendChild(card);
     });
 
     if (editState.cleaning) {
-      const addArea = el("div", "card card-pad", `<button class="btn btn-sm" id="cleanAddArea" style="width:100%">+ 添加区域</button>`);
-      grid.appendChild(addArea);
-      $("#cleanAddArea").onclick = () => openAreaEditor(week);
-      $("[data-assign]") && $all("[data-assign]", grid).forEach(b => b.onclick = () => openAssignEditor(week, +b.dataset.assign));
-      $all("[data-rmarea]", grid).forEach(b => b.onclick = () => { week.tasks.splice(+b.dataset.rmarea, 1); persist(); renderCleaning(); });
+      $all("[data-assign]", grid).forEach(b => b.onclick = () => openAssignEditor(week, +b.dataset.assign));
+    } else {
+      $all(".area-people", grid).forEach(p => {
+        p.style.cursor = "pointer";
+        p.onclick = () => openAssignEditor(week, +p.dataset.di);
+      });
     }
 
     $("#cleanWeek").onchange = (e) => { cleanWeekIdx = +e.target.value; renderCleaning(); };
@@ -486,7 +503,7 @@
     $("#cleanCopy").onclick = () => {
       if (cleanWeekIdx === 0) { toast("已是第一周，无上周可复制", "err"); return; }
       const prev = sch[cleanWeekIdx - 1];
-      week.tasks = deepClone(prev.tasks).map(t => ({ ...t, studentIds: t.studentIds.slice() }));
+      if (prev.days) week.days = deepClone(prev.days);
       persist(); renderCleaning(); toast("已复制上周排班", "ok");
     };
     $("#cleanToggle").onclick = () => { editState.cleaning = !editState.cleaning; renderCleaning(); };
@@ -501,32 +518,23 @@
       footer: `<button class="btn btn-ghost" data-close>取消</button><button class="btn btn-primary" id="wkSave">添加</button>`
     });
     $("#wkSave").onclick = () => {
-      const w = { weekStart: $("#wkStart").value || todayStr(), weekLabel: $("#wkLabel").value.trim() || "第" + (data.cleaning.schedule.length + 1) + "周", tasks: [] };
+      const w = {
+        weekStart: $("#wkStart").value || todayStr(),
+        weekLabel: $("#wkLabel").value.trim() || "第" + (data.cleaning.schedule.length + 1) + "周",
+        days: WEEKDAYS.map((_, i) => ({ weekday: i + 1, studentIds: [] }))
+      };
       data.cleaning.schedule.push(w);
       cleanWeekIdx = data.cleaning.schedule.length - 1;
       persist(); renderCleaning(); closeModal(); toast("已添加新周", "ok");
     };
   }
 
-  function openAreaEditor(week) {
+  function openAssignEditor(week, di) {
+    const day = week.days[di];
+    const have = new Set(day.studentIds || []);
+    const dayLabel = WEEKDAYS[day.weekday - 1] || ("第" + (di + 1) + "天");
     openModal({
-      title: "添加区域",
-      body: `<div class="form-group"><label>区域名称</label><input class="input" id="areaName" placeholder="如 窗台与窗台槽"></div>`,
-      footer: `<button class="btn btn-ghost" data-close>取消</button><button class="btn btn-primary" id="areaSave">添加</button>`
-    });
-    $("#areaSave").onclick = () => {
-      const n = $("#areaName").value.trim();
-      if (!n) { toast("请输入区域名", "err"); return; }
-      week.tasks.push({ area: n, studentIds: [] });
-      persist(); renderCleaning(); closeModal();
-    };
-  }
-
-  function openAssignEditor(week, ti) {
-    const task = week.tasks[ti];
-    const have = new Set(task.studentIds);
-    openModal({
-      title: `分配 · ${task.area}`,
+      title: `值日分配 · ${dayLabel}`,
       body: `<div class="help">点击学生切换分配。</div><div class="multi-select" id="assignBox"></div>`,
       footer: `<button class="btn btn-ghost" data-close>取消</button><button class="btn btn-primary" id="assignSave">保存</button>`
     });
@@ -542,7 +550,7 @@
       box.appendChild(c);
     });
     $("#assignSave").onclick = () => {
-      task.studentIds = data.students.filter(s => have.has(s.id)).map(s => s.id);
+      day.studentIds = data.students.filter(s => have.has(s.id)).map(s => s.id);
       persist(); renderCleaning(); closeModal(); toast("已更新值日生", "ok");
     };
   }
@@ -688,6 +696,16 @@
     if (hwSearchEl) hwSearchEl.addEventListener("input", (e) => { hwQuery = e.target.value; renderHomework(); });
     const attSearchEl = document.getElementById("attSearch");
     if (attSearchEl) attSearchEl.addEventListener("input", (e) => { attQuery = e.target.value; renderAttendance(); });
+
+    if (location.hash.startsWith("#token=")) {
+      const tk = decodeURIComponent(location.hash.slice(7));
+      if (tk) {
+        settings.token = tk;
+        localStorage.setItem(SET_KEY, JSON.stringify(settings));
+        history.replaceState(null, "", location.pathname + location.search);
+        toast("Token 已从 URL 自动填入", "ok");
+      }
+    }
 
     attDate = latestAttDate() || todayStr();
     cleanWeekIdx = Math.max(0, (data.cleaning.schedule.length || 1) - 1);
