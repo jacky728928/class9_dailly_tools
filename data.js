@@ -1,9 +1,9 @@
-/* 班级管理数据 · 由班级管理工具自动生成 2026-08-31 */
+/* 班级管理数据 · 由班级管理工具自动生成 2026-09-01 */
 window.CLASS_DATA = {
   "meta": {
     "className": "高二（9）班",
     "semester": "2026—2027学年第一学期（1-27周）",
-    "updated": "2026-08-31",
+    "updated": "2026-09-01",
     "homeRoom": "高二9班",
     "subjectColors": {
       "语文": "#e05858",
@@ -26,54 +26,56 @@ window.CLASS_DATA = {
     }
   },
   "students": [
-    { "id": 1,  "name": "袁佩林", "studentNo": "2801230" },
-    { "id": 2,  "name": "董梓涵", "studentNo": "2801236" },
-    { "id": 3,  "name": "高艺函", "studentNo": "2801241" },
-    { "id": 4,  "name": "吕婧萱", "studentNo": "2801296" },
-    { "id": 5,  "name": "刘嘉悦", "studentNo": "2801298" },
-    { "id": 6,  "name": "徐睦坤", "studentNo": "2801390" },
-    { "id": 7,  "name": "张恬语", "studentNo": "2801403" },
-    { "id": 8,  "name": "韩沐林", "studentNo": "2801405" },
-    { "id": 9,  "name": "黄桢粟", "studentNo": "2801410" },
-    { "id": 10, "name": "薛畅",   "studentNo": "2801444" },
-    { "id": 11, "name": "王梓源", "studentNo": "2801453" },
-    { "id": 12, "name": "张莫涵", "studentNo": "2801496" },
-    { "id": 13, "name": "曹舒然", "studentNo": "2801498" },
-    { "id": 14, "name": "常岚清", "studentNo": "2801500" },
-    { "id": 15, "name": "咸希尧", "studentNo": "2801512" },
-    { "id": 16, "name": "兰子墨", "studentNo": "2801517" },
-    { "id": 17, "name": "雷雨澄", "studentNo": "2801557" },
-    { "id": 18, "name": "闫凯旋", "studentNo": "2801590" },
-    { "id": 19, "name": "张凌涵", "studentNo": "2801599" },
-    { "id": 20, "name": "张奕辰", "studentNo": "2801600" },
-    { "id": 31, "name": "程禹瑞", "studentNo": "2801067" },
-    { "id": 32, "name": "郝峻霄", "studentNo": "2801111" },
-    { "id": 33, "name": "叶严泽", "studentNo": "2801219" },
-    { "id": 34, "name": "李沐城", "studentNo": "2801227" },
-    { "id": 35, "name": "郭金铭", "studentNo": "2801229" },
-    { "id": 36, "name": "艾子皓", "studentNo": "2801233" },
-    { "id": 37, "name": "祖淏楠", "studentNo": "2801234" },
-    { "id": 38, "name": "蒙映坤", "studentNo": "2801248" },
-    { "id": 39, "name": "张潇",   "studentNo": "2801255" },
-    { "id": 40, "name": "王路珩", "studentNo": "2801277" },
-    { "id": 41, "name": "张皓嘉", "studentNo": "2801307" },
-    { "id": 42, "name": "陈思聪", "studentNo": "2801343" },
-    { "id": 43, "name": "李铭轩", "studentNo": "2801371" },
-    { "id": 44, "name": "李云麒", "studentNo": "2801382" },
-    { "id": 45, "name": "杨鼎铭", "studentNo": "2801408" },
-    { "id": 46, "name": "刘梓粲", "studentNo": "2801414" },
-    { "id": 47, "name": "曹鹤轩", "studentNo": "2801431" },
-    { "id": 48, "name": "杨尧之", "studentNo": "2801440" },
-    { "id": 49, "name": "郑天",   "studentNo": "2801454" },
-    { "id": 50, "name": "杜名琛", "studentNo": "2801455" },
-    { "id": 51, "name": "陈昱峰", "studentNo": "2801532" },
-    { "id": 52, "name": "赵一川", "studentNo": "2801533" },
-    { "id": 53, "name": "张隽实", "studentNo": "2801551" },
-    { "id": 54, "name": "韩泓宇", "studentNo": "2801575" },
-    { "id": 55, "name": "李晟鹏", "studentNo": "2801579" },
-    { "id": 56, "name": "郭增恒", "studentNo": "2801584" },
-    { "id": 57, "name": "刘家梁", "studentNo": "2801587" },
-    { "id": 58, "name": "李禹凡", "studentNo": "2801588" }
+    {
+      "id": 1,
+      "name": "陈思远",
+      "studentNo": "01"
+    },
+    {
+      "id": 2,
+      "name": "林雨桐",
+      "studentNo": "02"
+    },
+    {
+      "id": 3,
+      "name": "周子轩",
+      "studentNo": "03"
+    },
+    {
+      "id": 4,
+      "name": "黄诗涵",
+      "studentNo": "04"
+    },
+    {
+      "id": 5,
+      "name": "赵宇辰",
+      "studentNo": "05"
+    },
+    {
+      "id": 6,
+      "name": "沈梓涵",
+      "studentNo": "06"
+    },
+    {
+      "id": 7,
+      "name": "刘梓豪",
+      "studentNo": "07"
+    },
+    {
+      "id": 8,
+      "name": "王雨欣",
+      "studentNo": "08"
+    },
+    {
+      "id": 9,
+      "name": "张子墨",
+      "studentNo": "09"
+    },
+    {
+      "id": 10,
+      "name": "李欣怡",
+      "studentNo": "10"
+    }
   ],
   "schedule": {
     "periods": [
@@ -362,9 +364,234 @@ window.CLASS_DATA = {
       ]
     }
   },
-  "homework": [],
-  "attendance": {},
+  "homework": [
+    {
+      "id": "hw001",
+      "subject": "数学",
+      "title": "《课时练》P12-13",
+      "assignedDate": "2026-09-01",
+      "dueDate": "2026-09-03",
+      "submittedIds": [
+        10,
+        9,
+        8,
+        7,
+        6,
+        4,
+        2,
+        5,
+        3
+      ]
+    },
+    {
+      "id": "hw002",
+      "subject": "语文",
+      "title": "背诵《劝学》全文",
+      "assignedDate": "2026-09-01",
+      "dueDate": "2026-09-02",
+      "submittedIds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "id": "hw003",
+      "subject": "英语",
+      "title": "Unit 1 单词抄写两遍",
+      "assignedDate": "2026-09-02",
+      "dueDate": "2026-09-04",
+      "submittedIds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": "hwmtip7ylw",
+      "subject": "语文",
+      "title": "1",
+      "assignedDate": "2026-09-01",
+      "dueDate": "",
+      "submittedIds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ]
+    }
+  ],
+  "attendance": {
+    "2026-09-01": [
+      {
+        "studentId": 1,
+        "status": "present"
+      },
+      {
+        "studentId": 2,
+        "status": "present"
+      },
+      {
+        "studentId": 3,
+        "status": "present"
+      },
+      {
+        "studentId": 4,
+        "status": "present"
+      },
+      {
+        "studentId": 5,
+        "status": "late"
+      },
+      {
+        "studentId": 6,
+        "status": "present"
+      },
+      {
+        "studentId": 7,
+        "status": "present"
+      },
+      {
+        "studentId": 8,
+        "status": "leave"
+      },
+      {
+        "studentId": 9,
+        "status": "present"
+      },
+      {
+        "studentId": 10,
+        "status": "present"
+      }
+    ],
+    "2026-09-02": [
+      {
+        "studentId": 1,
+        "status": "present"
+      },
+      {
+        "studentId": 2,
+        "status": "present"
+      },
+      {
+        "studentId": 3,
+        "status": "present"
+      },
+      {
+        "studentId": 4,
+        "status": "present"
+      },
+      {
+        "studentId": 5,
+        "status": "present"
+      },
+      {
+        "studentId": 6,
+        "status": "present"
+      },
+      {
+        "studentId": 7,
+        "status": "present"
+      },
+      {
+        "studentId": 8,
+        "status": "present"
+      },
+      {
+        "studentId": 9,
+        "status": "present"
+      },
+      {
+        "studentId": 10,
+        "status": "present"
+      }
+    ]
+  },
   "cleaning": {
-    "schedule": []
+    "schedule": [
+      {
+        "weekStart": "2026-09-01",
+        "weekLabel": "第1周",
+        "tasks": [
+          {
+            "area": "教室地面",
+            "studentIds": [
+              1,
+              2
+            ]
+          },
+          {
+            "area": "黑板与讲台",
+            "studentIds": [
+              3
+            ]
+          },
+          {
+            "area": "走廊与楼梯",
+            "studentIds": [
+              4,
+              5
+            ]
+          },
+          {
+            "area": "室外卫生区",
+            "studentIds": [
+              6,
+              7
+            ]
+          },
+          {
+            "area": "倒垃圾",
+            "studentIds": [
+              8
+            ]
+          }
+        ]
+      },
+      {
+        "weekStart": "2026-09-08",
+        "weekLabel": "第2周",
+        "tasks": [],
+        "days": [
+          {
+            "weekday": 1,
+            "studentIds": []
+          },
+          {
+            "weekday": 2,
+            "studentIds": []
+          },
+          {
+            "weekday": 3,
+            "studentIds": []
+          },
+          {
+            "weekday": 4,
+            "studentIds": []
+          },
+          {
+            "weekday": 5,
+            "studentIds": []
+          }
+        ]
+      }
+    ]
   }
 };
