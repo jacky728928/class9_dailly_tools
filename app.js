@@ -14,6 +14,12 @@
     late:    { label: "迟", cls: "late" },
     leave:   { label: "请", cls: "leave" }
   };
+  const DEFAULT_SETTINGS = {
+    owner: "jacky728928",
+    repo: "class9_dailly_tools",
+    branch: "main",
+    path: "data.js"
+  };
 
   /* ---------- 状态 ---------- */
   let data = loadData();
@@ -34,12 +40,6 @@
     } catch (e) { /* ignore corrupt */ }
     return deepClone(window.CLASS_DATA || {});
   }
-  const DEFAULT_SETTINGS = {
-    owner: "jacky728928",
-    repo: "class9_dailly_tools",
-    branch: "main",
-    path: "data.js"
-  };
   function loadSettings() {
     try {
       const saved = JSON.parse(localStorage.getItem(SET_KEY)) || {};
