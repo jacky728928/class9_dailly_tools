@@ -681,12 +681,205 @@
     markDirty(dirty);
   }
 
+  /* =====================================================================
+     导出报表 (Excel)
+     ===================================================================== */
+  function openExportDialog() {
+    const today = todayStr();
+    const weekStart = getWeekStart(today);
+    const weekEnd = addDays(weekStart, 4);
+    openModal({
+      title: "导出报表",
+      body: `
+        <div class="form-group">
+          <label>选择导出内容</label>
+          <div class="export-checks">
+            <label class="check-row"><input type="checkbox" id="expRoster" checked> 学生名单</label>
+            <label class="check-row"><input type="checkbox" id="expSchedule" checked> 周课表</label>
+            <label class="check-row"><input type="checkbox" id="expHomework" checked> 作业收交</label>
+            <label class="check-row"><input type="checkbox" id="expAttendance" checked> 考勤记录</label>
+            <label class="check-row"><input type="checkbox" id="expCleaning" checked> 卫生排班</label>
+          </div>
+        </div>
+        <div class="form-row2">
+          <div class="form-group"><label>开始日期</label><input class="input" type="date" id="expStart" value="${weekStart}"></div>
+          <div class="form-group"><label>结束日期</label><input class="input" type="date" id="expEnd" value="${weekEnd}"></div>
+        </div>
+        <div class="help">考勤和作业将按日期范围导出；课表、名单、卫生为全量导出。</div>`,
+      footer: `<button class="btn btn-ghost" data-close>取消</button><button class="btn btn-primary" id="expDo">导出 Excel</button>`
+    });
+    $("#expDo").onclick = doExport;
+  }
+
+  function getWeekStart(d) {
+    const date = new Date(d);
+    const day = date.getDay(); // 0=Sunday
+    const diff = day === 0 ? -6 : 1 - day; // Monday
+    date.setDate(date.getDate() + diff);
+    return date.toISOString().slice(0, 10);
+  }
+  function addDays(d, n) {
+    const date = new Date(d);
+    date.setDate(date.getDate() + n);
+    return date.toISOString().slice(0, 10);
+  }
+
+  function doExport() {
+    if (typeof XLSX === "undefined") { toast("Excel 库加载失败，请检查网络", "err"); return; }
+    const opts = {
+      roster: $("#expRoster").checked,
+      schedule: $("#expSchedule").checked,
+      homework: $("#expHomework").checked,
+      attendance: $("#expAttendance").checked,
+      cleaning: $("#expCleaning").checked,
+      start: $("#expStart").value,
+      end: $("#expEnd").value
+    };
+    if (!opts.roster && !opts.schedule && !opts.homework && !opts.attendance && !opts.cleaning) {
+      toast("请至少选择一项导出内容", "err"); return;
+    }
+
+    const wb = XLSX.utils.book_new();
+    if (opts.roster) XLSX.utils.book_append_sheet(wb, buildRosterSheet(), "学生名单");
+    if (opts.schedule) XLSX.utils.book_append_sheet(wb, buildScheduleSheet(), "周课表");
+    if (opts.homework) XLSX.utils.book_append_sheet(wb, buildHomeworkSheet(opts.start, opts.end), "作业收交");
+    if (opts.attendance) XLSX.utils.book_append_sheet(wb, buildAttendanceSheet(opts.start, opts.end), "考勤记录");
+    if (opts.cleaning) XLSX.utils.book_append_sheet(wb, buildCleaningSheet(), "卫生排班");
+
+    const fileName = `班级报表_${data.meta.className || "班级"}_${todayStr()}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+    closeModal();
+    toast("导出成功", "ok");
+  }
+
+  function buildRosterSheet() {
+    const rows = [["序号", "学号", "姓名"]];
+    data.students.forEach(s => rows.push([s.id, s.studentNo, s.name]));
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws["!cols"] = [{ wch: 8 }, { wch: 14 }, { wch: 12 }];
+    return ws;
+  }
+
+  function buildScheduleSheet() {
+    const sch = data.schedule;
+    if (!sch || !sch.days || !sch.periods) return XLSX.utils.aoa_to_sheet([["暂无课表数据"]]);
+    const header = ["节次", "时间", ...WEEKDAYS];
+    const rows = [header];
+    sch.periods.forEach((p, pi) => {
+      const row = [];
+      if (p.break) {
+        row.push(p.label || "休息", p.time || "");
+        for (let i = 0; i < WEEKDAYS.length; i++) row.push("");
+      } else {
+        row.push("第" + p.index + "节", p.time || "");
+        WEEKDAYS.forEach((_, di) => {
+          const cell = sch.days[di] && sch.days[di].cells ? sch.days[di].cells[pi] : null;
+          if (!cell) { row.push(""); return; }
+          let text = cell.subject || "";
+          if (cell.teacher) text += " (" + cell.teacher + ")";
+          if (cell.groups) text += " [" + cell.groups.map(g => g.name).join("/") + "]";
+          row.push(text);
+        });
+      }
+      rows.push(row);
+    });
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws["!cols"] = [{ wch: 8 }, { wch: 14 }, ...WEEKDAYS.map(() => ({ wch: 22 }))];
+    return ws;
+  }
+
+  function buildHomeworkSheet(start, end) {
+    const list = (data.homework || []).filter(h => {
+      if (start && h.dueDate && h.dueDate < start) return false;
+      if (end && h.assignedDate && h.assignedDate > end) return false;
+      return true;
+    });
+    if (!list.length) return XLSX.utils.aoa_to_sheet([["该日期范围内暂无作业"]]);
+
+    const total = data.students.length;
+    const rows = [["科目", "作业标题", "布置日期", "截止日期", "应交人数", "已交人数", "未交人数", "未交名单"]];
+    list.forEach(h => {
+      const submitted = new Set(h.submittedIds || []);
+      const unsubmitted = data.students.filter(s => !submitted.has(s.id));
+      rows.push([
+        h.subject || "",
+        h.title || "",
+        h.assignedDate || "",
+        h.dueDate || "",
+        total,
+        submitted.size,
+        unsubmitted.length,
+        unsubmitted.map(s => s.name).join("、")
+      ]);
+    });
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws["!cols"] = [{ wch: 8 }, { wch: 30 }, { wch: 12 }, { wch: 12 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 40 }];
+    return ws;
+  }
+
+  function buildAttendanceSheet(start, end) {
+    const att = data.attendance || {};
+    const dates = Object.keys(att).sort().filter(d => {
+      if (start && d < start) return false;
+      if (end && d > end) return false;
+      return true;
+    });
+    if (!dates.length) return XLSX.utils.aoa_to_sheet([["该日期范围内暂无考勤记录"]]);
+
+    const STATUS_LABEL = { present: "到", absent: "缺", late: "迟", leave: "请" };
+    const rows = [["学号", "姓名", ...dates]];
+    data.students.forEach(s => {
+      const row = [s.studentNo, s.name];
+      dates.forEach(d => {
+        const record = (att[d] || []).find(r => r.studentId === s.id);
+        row.push(record ? (STATUS_LABEL[record.status] || record.status) : "");
+      });
+      rows.push(row);
+    });
+    // 统计行
+    const statRow = ["", "合计"];
+    dates.forEach(d => {
+      const dayList = att[d] || [];
+      const counts = { present: 0, absent: 0, late: 0, leave: 0 };
+      dayList.forEach(r => { if (counts[r.status] != null) counts[r.status]++; });
+      statRow.push(`到${counts.present} 缺${counts.absent} 迟${counts.late} 请${counts.leave}`);
+    });
+    rows.push(statRow);
+
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws["!cols"] = [{ wch: 12 }, { wch: 10 }, ...dates.map(() => ({ wch: 10 }))];
+    return ws;
+  }
+
+  function buildCleaningSheet() {
+    const sch = data.cleaning.schedule || [];
+    if (!sch.length) return XLSX.utils.aoa_to_sheet([["暂无卫生排班"]]);
+
+    const rows = [["周次", "起始日期", "星期", "值日学生"]];
+    sch.forEach(w => {
+      const days = w.days || [];
+      days.forEach((day, di) => {
+        const names = (day.studentIds || []).map(id => studentName(id)).join("、");
+        rows.push([
+          w.weekLabel || "",
+          di === 0 ? (w.weekStart || "") : "",
+          WEEKDAYS[day.weekday - 1] || ("第" + (di + 1) + "天"),
+          names
+        ]);
+      });
+    });
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws["!cols"] = [{ wch: 10 }, { wch: 12 }, { wch: 8 }, { wch: 50 }];
+    return ws;
+  }
+
   /* ---------- 初始化 ---------- */
   function init() {
     // 绑定标签
     $all(".tab").forEach(t => t.addEventListener("click", () => switchTab(t.dataset.tab)));
     document.getElementById("btnSettings").onclick = openSettings;
     document.getElementById("btnSync").onclick = syncToCloud;
+    document.getElementById("btnExport").onclick = openExportDialog;
     document.getElementById("modalMask").addEventListener("click", (e) => { if (e.target.id === "modalMask") closeModal(); });
     document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
 
