@@ -453,10 +453,10 @@
   function renderCleaning() {
     const sch = data.cleaning.schedule;
     if (!sch.length) {
-      data.cleaning.schedule = [{
+      sch.push({
         weekStart: todayStr(), weekLabel: "第1周",
         days: WEEKDAYS.map((_, i) => ({ weekday: i + 1, studentIds: [] }))
-      }];
+      });
     }
     if (cleanWeekIdx >= sch.length) cleanWeekIdx = sch.length - 1;
 
